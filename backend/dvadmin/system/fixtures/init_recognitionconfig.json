@@ -1,0 +1,104 @@
+[
+    {
+        "parent": null,
+        "title": "单图识别",
+        "key": "recognition",
+        "value": null,
+        "sort": 1,
+        "status": true,
+        "data_options": null,
+        "form_item_type": 0,
+        "rule": null,
+        "placeholder": null,
+        "setting": null,
+        "readonly": true,
+        "children": [
+            {
+                "parent": 1,
+                "title": "网站名称",
+                "key": "site_name",
+                "value": "邃蓝智能血细胞AI检测识别系统",
+                "sort": 1,
+                "status": true,
+                "data_options": null,
+                "form_item_type": 0,
+                "rule": [],
+                "placeholder": "",
+                "setting": null,
+                "children": [],
+                "readonly": true
+            },
+            {
+                "parent": 1,
+                "title": "操作人",
+                "key": "site_operator",
+                "value": "",
+                "sort": 2,
+                "status": true,
+                "data_options": null,
+                "form_item_type": 0,
+                "rule": [],
+                "placeholder": "",
+                "setting": null,
+                "children": [],
+                "readonly": true
+            },
+            {
+                "parent": 1,
+                "title": "请上传骨髓血细胞图像",
+                "key": "cell_picture",
+                "value": null,
+                "sort": 3,
+                "status": true,
+                "data_options": null,
+                "form_item_type": 7,
+                "rule": [                    
+                    {
+                        "message": "必填项不能为空",
+                        "required": true
+                    }
+                ],
+                "placeholder": "请上传骨髓血细胞图像",
+                "setting": null,
+                "children": [],
+                "readonly": false
+            },
+            {
+                "parent": 1,
+                "title": "患者ID",
+                "key": "patient_id",
+                "value": "",
+                "sort": 4,
+                "status": true,
+                "data_options": null,
+                "form_item_type": 0,
+                "rule": [
+                    {
+                        "message": "必填项不能为空",
+                        "required": true
+                    }
+                ],
+                "placeholder": "请输入患者ID",
+                "setting": null,
+                "children": [],
+                "readonly": false 
+            },
+            {
+                "parent": 1,
+                "title": "版权信息",
+                "key": "copyright",
+                "value": "邃蓝智能科技（上海）有限公司 版权所有",
+                "sort": 5,
+                "status": true,
+                "data_options": null,
+                "form_item_type": 0,
+                "rule": [
+                ],
+                "placeholder": "请输入版权信息",
+                "setting": null,
+                "children": [],
+                "readonly": true
+            }
+        ]
+    }
+]
