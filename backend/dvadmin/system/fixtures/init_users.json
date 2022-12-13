@@ -1,7 +1,7 @@
 [
   {
     "username": "deep-voxel",
-    "email": "dvadmin@django-vue-admin.com",
+    "email": "sunty20@mails.tsinghua.edu.cn",
     "mobile": "",
     "avatar": null,
     "name": "曾亮",
@@ -22,7 +22,7 @@
   },
   {
     "username": "admin",
-    "email": "dvadmin@django-vue-admin.com",
+    "email": "sunty20@mails.tsinghua.edu.cn",
     "mobile": "18888888888",
     "avatar": "",
     "name": "管理员",
@@ -39,7 +39,7 @@
   },
   {
     "username": "test",
-    "email": "dvadmin@django-vue-admin.com",
+    "email": "sunty20@mails.tsinghua.edu.cn",
     "mobile": "18888888888",
     "avatar": "",
     "name": "测试人员",

@@ -22,6 +22,15 @@ export function GetSelfReceive (query) {
   })
 }
 
+export function getCurrentUserInfo () {
+  const _self = this
+  return request({
+    url: '/api/system/user/user_info/',
+    method: 'get',
+    params: {}
+  })
+}
+
 export function GetObj (obj) {
   return request({
     url: urlPrefix + obj.id + '/',

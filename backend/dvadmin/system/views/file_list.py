@@ -32,5 +32,5 @@ class FileViewSet(CustomModelViewSet):
     """
     queryset = FileList.objects.all()
     serializer_class = FileSerializer
-    filter_fields = ['name', ]
+    filter_fields = ['name', 'id']
     permission_classes = []

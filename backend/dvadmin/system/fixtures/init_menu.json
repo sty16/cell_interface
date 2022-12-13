@@ -1,7 +1,7 @@
 [
     {
-        "name": "系统管理",
-        "icon": "cog",
+        "name": "血细胞识别",
+        "icon": "bank",
         "sort": 1,
         "is_link": false,
         "is_catalog": true,
@@ -14,54 +14,7 @@
         "parent": null,
         "children": [
             {
-                "name": "菜单管理",
-                "icon": "navicon",
-                "sort": 1,
-                "is_link": false,
-                "is_catalog": false,
-                "web_path": "/menu",
-                "component": "system/menu",
-                "component_name": "menu",
-                "status": true,
-                "cache": false,
-                "visible": true,
-                "parent": 277,
-                "children": [],
-                "menu_button": [
-                    {
-                        "name": "查询",
-                        "value": "Search",
-                        "api": "/api/system/menu/",
-                        "method": 0
-                    },
-                    {
-                        "name": "详情",
-                        "value": "Retrieve",
-                        "api": "/api/system/menu/{id}/",
-                        "method": 0
-                    },
-                    {
-                        "name": "新增",
-                        "value": "Create",
-                        "api": "/api/system/menu/",
-                        "method": 1
-                    },
-                    {
-                        "name": "编辑",
-                        "value": "Update",
-                        "api": "/api/system/menu/{id}/",
-                        "method": 2
-                    },
-                    {
-                        "name": "删除",
-                        "value": "Delete",
-                        "api": "/api/system/menu/{id}/",
-                        "method": 3
-                    }
-                ]
-            },
-            {
-                "name": "系统配置",
+                "name": "单图识别",
                 "icon": "desktop",
                 "sort": 0,
                 "is_link": false,
@@ -108,6 +61,53 @@
                 ]
             },
             {
+                "name": "多图识别",
+                "icon": "bullhorn",
+                "sort": 7,
+                "is_link": false,
+                "is_catalog": false,
+                "web_path": "/recognition",
+                "component": "system/recognition/index",
+                "component_name": "recognition",
+                "status": true,
+                "cache": false,
+                "visible": true,
+                "parent": 277,
+                "children": [],
+                "menu_button": [
+                    {
+                        "name": "查询",
+                        "value": "Search",
+                        "api": "/api/system/message_center/",
+                        "method": 0
+                    },
+                    {
+                        "name": "详情",
+                        "value": "Retrieve",
+                        "api": "/api/system/message_center/{id}/",
+                        "method": 0
+                    },
+                    {
+                        "name": "新增",
+                        "value": "Create",
+                        "api": "/api/system/message_center/",
+                        "method": 1
+                    },
+                    {
+                        "name": "编辑",
+                        "value": "Update",
+                        "api": "/api/system/message_center/{id}/",
+                        "method": 2
+                    },
+                    {
+                        "name": "删除",
+                        "value": "Delete",
+                        "api": "/api/system/menu/{id}/",
+                        "method": 3
+                    }
+                ]
+            },
+            {
                 "name": "菜单按钮",
                 "icon": "dot-circle-o",
                 "sort": 2,
@@ -147,109 +147,67 @@
                         "method": 3
                     }
                 ]
-            },
+            }
+        ],
+        "menu_button": []
+    },
+    {
+        "name": "患者数据管理",
+        "icon": "address-book",
+        "sort": 2,
+        "is_link": false,
+        "is_catalog": true,
+        "web_path": "",
+        "component": "",
+        "component_name": "",
+        "status": true,
+        "cache": false,
+        "visible": true,
+        "parent": null,
+        "children": [
             {
-                "name": "部门管理",
-                "icon": "bank",
+                "name": "血细胞文件管理",
+                "icon": "file-text-o",
                 "sort": 3,
                 "is_link": false,
                 "is_catalog": false,
-                "web_path": "/dept",
-                "component": "system/dept/index",
-                "component_name": "dept",
+                "web_path": "/file",
+                "component": "system/fileList/index",
+                "component_name": "file",
                 "status": true,
                 "cache": false,
                 "visible": true,
-                "parent": 277,
+                "parent": 285,
                 "children": [],
                 "menu_button": [
                     {
-                        "name": "查询",
-                        "value": "Search",
-                        "api": "/api/system/dept/",
-                        "method": 0
-                    },
-                    {
                         "name": "详情",
                         "value": "Retrieve",
-                        "api": "/api/system/dept/{id}/",
+                        "api": "/api/system/file/{id}/",
                         "method": 0
                     },
                     {
-                        "name": "新增",
-                        "value": "Create",
-                        "api": "/api/system/dept/",
-                        "method": 1
+                        "name": "查询",
+                        "value": "Search",
+                        "api": "/api/system/file/",
+                        "method": 0
                     },
                     {
                         "name": "编辑",
                         "value": "Update",
-                        "api": "/api/system/dept/{id}/",
-                        "method": 2
+                        "api": "/api/system/file/{id}/",
+                        "method": 1
                     },
                     {
                         "name": "删除",
                         "value": "Delete",
-                        "api": "/api/system/dept/{id}/",
+                        "api": "/api/system/file/{id}/",
                         "method": 3
                     }
                 ]
             },
             {
-                "name": "角色管理",
-                "icon": "address-book",
-                "sort": 4,
-                "is_link": false,
-                "is_catalog": false,
-                "web_path": "/role",
-                "component": "system/role/index",
-                "component_name": "role",
-                "status": true,
-                "cache": false,
-                "visible": true,
-                "parent": 277,
-                "children": [],
-                "menu_button": [
-                    {
-                        "name": "查询",
-                        "value": "Search",
-                        "api": "/api/system/role/",
-                        "method": 0
-                    },
-                    {
-                        "name": "详情",
-                        "value": "Retrieve",
-                        "api": "/api/system/role/{id}/",
-                        "method": 0
-                    },
-                    {
-                        "name": "新增",
-                        "value": "Create",
-                        "api": "/api/system/role/",
-                        "method": 1
-                    },
-                    {
-                        "name": "编辑",
-                        "value": "Update",
-                        "api": "/api/system/role/{id}/",
-                        "method": 2
-                    },
-                    {
-                        "name": "保存",
-                        "value": "Save",
-                        "api": "/api/system/role/{id}/",
-                        "method": 2
-                    },
-                    {
-                        "name": "删除",
-                        "value": "Delete",
-                        "api": "/api/system/role/{id}/",
-                        "method": 3
-                    }
-                ]
-            },
-            {
-                "name": "用户管理",
+                "name": "患者信息管理",
                 "icon": "users",
                 "sort": 6,
                 "is_link": false,
@@ -315,252 +273,6 @@
                         "name": "删除",
                         "value": "Delete",
                         "api": "/api/system/user/{id}/",
-                        "method": 3
-                    }
-                ]
-            },
-            {
-                "name": "消息中心",
-                "icon": "bullhorn",
-                "sort": 7,
-                "is_link": false,
-                "is_catalog": false,
-                "web_path": "/messageCenter",
-                "component": "system/messageCenter/index",
-                "component_name": "messageCenter",
-                "status": true,
-                "cache": false,
-                "visible": true,
-                "parent": 277,
-                "children": [],
-                "menu_button": [
-                    {
-                        "name": "查询",
-                        "value": "Search",
-                        "api": "/api/system/message_center/",
-                        "method": 0
-                    },
-                    {
-                        "name": "详情",
-                        "value": "Retrieve",
-                        "api": "/api/system/message_center/{id}/",
-                        "method": 0
-                    },
-                    {
-                        "name": "新增",
-                        "value": "Create",
-                        "api": "/api/system/message_center/",
-                        "method": 1
-                    },
-                    {
-                        "name": "编辑",
-                        "value": "Update",
-                        "api": "/api/system/message_center/{id}/",
-                        "method": 2
-                    },
-                    {
-                        "name": "删除",
-                        "value": "Delete",
-                        "api": "/api/system/menu/{id}/",
-                        "method": 3
-                    }
-                ]
-            },
-            {
-                "name": "接口白名单",
-                "icon": "compass",
-                "sort": 8,
-                "is_link": false,
-                "is_catalog": false,
-                "web_path": "/apiWhiteList",
-                "component": "system/whiteList/index",
-                "component_name": "whiteList",
-                "status": true,
-                "cache": false,
-                "visible": true,
-                "parent": 277,
-                "children": [],
-                "menu_button": [
-                    {
-                        "name": "查询",
-                        "value": "Search",
-                        "api": "/api/system/api_white_list/",
-                        "method": 0
-                    },
-                    {
-                        "name": "详情",
-                        "value": "Retrieve",
-                        "api": "/api/system/api_white_list/{id}/",
-                        "method": 0
-                    },
-                    {
-                        "name": "新增",
-                        "value": "Create",
-                        "api": "/api/system/api_white_list/",
-                        "method": 1
-                    },
-                    {
-                        "name": "编辑",
-                        "value": "Update",
-                        "api": "/api/system/api_white_list/{id}/",
-                        "method": 2
-                    },
-                    {
-                        "name": "删除",
-                        "value": "Delete",
-                        "api": "/api/system/api_white_list/{id}/",
-                        "method": 3
-                    }
-                ]
-            }
-        ],
-        "menu_button": []
-    },
-    {
-        "name": "常规配置",
-        "icon": "cogs",
-        "sort": 2,
-        "is_link": false,
-        "is_catalog": true,
-        "web_path": "",
-        "component": "",
-        "component_name": "",
-        "status": true,
-        "cache": false,
-        "visible": true,
-        "parent": null,
-        "children": [
-            {
-                "name": "字典管理",
-                "icon": "book",
-                "sort": 1,
-                "is_link": false,
-                "is_catalog": false,
-                "web_path": "/dictionary",
-                "component": "system/dictionary/index",
-                "component_name": "dictionary",
-                "status": true,
-                "cache": false,
-                "visible": true,
-                "parent": 285,
-                "children": [],
-                "menu_button": [
-                    {
-                        "name": "查询",
-                        "value": "Search",
-                        "api": "/api/system/dictionary/",
-                        "method": 0
-                    },
-                    {
-                        "name": "详情",
-                        "value": "Retrieve",
-                        "api": "/api/system/dictionary/{id}/",
-                        "method": 0
-                    },
-                    {
-                        "name": "新增",
-                        "value": "Create",
-                        "api": "/api/system/dictionary/",
-                        "method": 1
-                    },
-                    {
-                        "name": "编辑",
-                        "value": "Update",
-                        "api": "/api/system/dictionary/{id}/",
-                        "method": 2
-                    },
-                    {
-                        "name": "删除",
-                        "value": "Delete",
-                        "api": "/api/system/dictionary/{id}/",
-                        "method": 3
-                    }
-                ]
-            },
-            {
-                "name": "地区管理",
-                "icon": "map",
-                "sort": 2,
-                "is_link": false,
-                "is_catalog": false,
-                "web_path": "/areas",
-                "component": "system/areas/index",
-                "component_name": "areas",
-                "status": true,
-                "cache": false,
-                "visible": true,
-                "parent": 285,
-                "children": [],
-                "menu_button": [
-                    {
-                        "name": "查询",
-                        "value": "Search",
-                        "api": "/api/system/area/",
-                        "method": 0
-                    },
-                    {
-                        "name": "详情",
-                        "value": "Retrieve",
-                        "api": "/api/system/area/{id}/",
-                        "method": 0
-                    },
-                    {
-                        "name": "新增",
-                        "value": "Create",
-                        "api": "/api/system/area/",
-                        "method": 1
-                    },
-                    {
-                        "name": "编辑",
-                        "value": "Update",
-                        "api": "/api/system/area/{id}/",
-                        "method": 2
-                    },
-                    {
-                        "name": "删除",
-                        "value": "Delete",
-                        "api": "/api/system/area/{id}/",
-                        "method": 3
-                    }
-                ]
-            },
-            {
-                "name": "附件管理",
-                "icon": "file-text-o",
-                "sort": 3,
-                "is_link": false,
-                "is_catalog": false,
-                "web_path": "/file",
-                "component": "system/fileList/index",
-                "component_name": "file",
-                "status": true,
-                "cache": false,
-                "visible": true,
-                "parent": 285,
-                "children": [],
-                "menu_button": [
-                    {
-                        "name": "详情",
-                        "value": "Retrieve",
-                        "api": "/api/system/file/{id}/",
-                        "method": 0
-                    },
-                    {
-                        "name": "查询",
-                        "value": "Search",
-                        "api": "/api/system/file/",
-                        "method": 0
-                    },
-                    {
-                        "name": "编辑",
-                        "value": "Update",
-                        "api": "/api/system/file/{id}/",
-                        "method": 1
-                    },
-                    {
-                        "name": "删除",
-                        "value": "Delete",
-                        "api": "/api/system/file/{id}/",
                         "method": 3
                     }
                 ]
@@ -660,12 +372,12 @@
         "menu_button": []
     },
     {
-        "name": "DVAdmin官网",
+        "name": "DEEP-VOXEL官网",
         "icon": "external-link",
         "sort": 4,
         "is_link": true,
         "is_catalog": false,
-        "web_path": "https://django-vue-admin.com",
+        "web_path": "https://www.deep-voxel.com/",
         "component": "",
         "component_name": "",
         "status": true,

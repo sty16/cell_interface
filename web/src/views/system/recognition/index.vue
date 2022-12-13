@@ -1,27 +1,26 @@
 <template>
-  <d2-container :class="{'page-compact':crud.pageOptions.compact}">
-
-    <d2-crud-x
-      ref="d2Crud"
-      v-bind="_crudProps"
-      v-on="_crudListeners"
-      @onView="onView"
-    >
-      <div slot="header">
-        <crud-search ref="search" :options="crud.searchOptions" @submit="handleSearch"  />
-        <el-button size="small" type="primary" @click="addRow"><i class="el-icon-plus"/> 新增</el-button>
-        <el-tabs v-model="tabActivted" @tab-click="onTabClick">
-          <el-tab-pane label="我的发布" name="send"></el-tab-pane>
-          <el-tab-pane label="我的接收" name="receive"></el-tab-pane>
-        </el-tabs>
-        <crud-toolbar :search.sync="crud.searchOptions.show"
-                      :compact.sync="crud.pageOptions.compact"
-                      :columns="crud.columns"
-                      @refresh="doRefresh()"
-                      @columns-filter-changed="handleColumnsFilterChanged"/>
-      </div>
-
-    </d2-crud-x>
+  <d2-container>
+    <div>
+      <el-header>
+        <div class="yxt-flex-between">
+          <div>
+            <el-tag>多图识别: 您可以选择文件夹中多张图片进行识别</el-tag>
+          </div>
+          <div>
+          </div>
+        </div>
+      </el-header>
+    </div>
+    <el-tabs type="border-card" v-model='tabPaneName'>
+      <el-tab-pane
+        :key=1
+        label="多图识别"
+        name="first"
+      >
+        <formContent></formContent>
+        
+      </el-tab-pane>
+    </el-tabs>
   </d2-container>
 </template>
 
@@ -29,14 +28,18 @@
 import { AddObj, GetObj, GetList, UpdateObj, DelObj, GetSelfReceive } from './api'
 import { crudOptions } from './crud'
 import { d2CrudPlus } from 'd2-crud-plus'
+import formContent from '@/views/system/recognition/components/formContent'
 import viewTemplate from './viewTemplate.js'
 export default {
-  name: 'messageCenter',
-  components: {},
+  name: 'recognition',
+  components: {
+    formContent
+  },
   mixins: [d2CrudPlus.crud],
   data () {
     return {
-      tabActivted: 'send'
+      tabActivted: 'send',
+      tabPaneName: 'first'
     }
   },
 

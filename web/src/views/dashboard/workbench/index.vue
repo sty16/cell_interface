@@ -12,44 +12,16 @@
     </div>
 
     <el-row :gutter="20">
-      <el-col :span="12">
-        <el-card class="box-card">
-          <div slot="header" class="clearfix">
-            <span>友情链接</span>
 
-            <el-button style="float: right; padding: 3px 0" type="text">
-              <el-link href="https://bbs.django-vue-admin.com" target="_blank" type="primary">更多</el-link>
-            </el-button>
-          </div>
-          <el-row>
-              <el-col :span="8" v-for="({name,imageUrl,slogan,link},index) in projects" :key="index">
-              <el-card shadow="hover" style="padding: 0">
-                <div class="project-detail">
-                  <div>
-                    <a :href="link" target="_blank">
-                      <img :src="imageUrl" alt="">
-                      <span v-text="name" class="name"></span>
-                    </a>
-                  </div>
-                  <div v-text="slogan" class="slogan" :title="slogan"></div>
-                </div>
-
-              </el-card>
-              </el-col>
-          </el-row>
-        </el-card>
-
-      </el-col>
 
       <el-col :span="12">
         <div class="grid-content bg-purple">
-
           <el-card class="box-card" >
             <div slot="header" class="clearfix">
               <span>快捷导航</span>
             </div>
             <el-row>
-              <el-col :span="8" v-for="({name,icon,route,color},index) of navigators" :key="index" style="padding: 0">
+              <el-col :span="12" v-for="({name,icon,route,color},index) of navigators" :key="index" style="padding: 0">
                 <el-card shadow="hover">
                   <div  style="display: flex;align-items: center;flex-direction: column;cursor: pointer" @click="()=>{gotoRoute(route)}">
                     <d2-icon-svg :name="icon" style="width: 25px;height: 25px;" :style="{fill:color}"/>
@@ -59,13 +31,31 @@
               </el-col>
             </el-row>
           </el-card>
-
-          <el-card class="box-card"  style="margin-top: 25px">
-            <div class="work">
-              <d2-icon-svg name="work" style="margin-left: 50%;transform: translateX(-50%);height: 216px"/>
+          <el-card class="box-card" style="margin-top: 20px">
+            <div slot="header" class="clearfix">
+              <span>病例分析</span>
+              <el-button style="float: right; padding: 3px 0" type="text">
+                <el-link href="https://www.deep-voxel.com/" target="_blank" type="primary">更多</el-link>
+              </el-button>
             </div>
+            <el-row>
+              <div class="echart" id="mychart" style="float: left;width: 100%; height: 360px"></div>
+            </el-row>
           </el-card>
         </div>
+      </el-col>
+      <el-col :span="12">
+        <el-card class="box-card" >
+              <div slot="header" class="clearfix">
+                <span>病例分析</span>
+                <el-button style="float: right; padding: 3px 0" type="text">
+                  <el-link href="https://www.deep-voxel.com/" target="_blank" type="primary">更多</el-link>
+                </el-button>
+              </div>
+              <el-row>
+                <div class="echart" id="rosechart" style="float: left;width: 100%; height: 500px"></div>
+              </el-row>
+          </el-card>
       </el-col>
     </el-row>
 
@@ -76,6 +66,7 @@
 import { use } from 'echarts/core'
 import { CanvasRenderer } from 'echarts/renderers'
 import { PieChart } from 'echarts/charts'
+import * as echarts from "echarts";
 import {
   TitleComponent,
   TooltipComponent,
@@ -93,63 +84,7 @@ export default {
   name: 'workbench',
   data () {
     return {
-      projects: [
-        {
-          name: '官方文档',
-          imageUrl: '/image/django-vue-admin.png',
-          slogan: 'Django-Vue-Admin 是一套全部开源的快速开发平台，毫无保留给个人及企业免费使用。',
-          link: 'http://django-vue-admin.com'
-        },
-        {
-          name: '官方论坛',
-          imageUrl: '/image/django-vue-admin.png',
-          slogan: 'Django-Vue-Admin 官方论坛',
-          link: 'http://bbs.django-vue-admin.com'
-        },
-        {
-          name: 'D2admin',
-          imageUrl: '/image/d2-pub.png',
-          slogan: 'D2Admin (opens new window)是一个完全 开源免费 的企业中后台产品前端集成方案，使用最新的前端技术栈，' +
-            '小于 60kb 的本地首屏 js 加载，已经做好大部分项目前期准备工作，并且带有大量示例代码，助力管理系统快速开发。',
-          link: 'https://d2.pub/zh'
-        },
-        {
-          name: 'SimpleUi',
-          imageUrl: '/image/simple-ui.png',
-          slogan: '一个基于Django Admin的现代化主题。',
-          link: 'https://simpleui.72wo.com/'
-        },
-        {
-          name: '若依',
-          imageUrl: '/image/ruoyi.png',
-          slogan: '基于SpringBoot、Shiro、Mybatis的权限后台管理系统。',
-          link: 'http://ruoyi.vip/'
-        },
-        {
-          name: 'Gin-Vue-Admin',
-          imageUrl: '/image/gin-vue-admin.png',
-          slogan: '使用gin+vue进行极速开发的全栈后台管理系统。',
-          link: 'https://www.gin-vue-admin.com/'
-        },
-        {
-          name: 'DCM',
-          imageUrl: '/image/django-comment-migrate.png',
-          slogan: '这是一个Django model注释迁移的app',
-          link: 'https://github.com/starryrbs/django-comment-migrate'
-        },
-        {
-          name: 'Jetbrains',
-          imageUrl: '/image/jetbrains.jpeg',
-          slogan: '我们构建我们的软件，让您可以享受构建自己的软件的乐趣',
-          link: 'https://www.jetbrains.com/'
-        },
-        {
-          name: 'Django',
-          imageUrl: '/image/django.png',
-          slogan: '有期限的完美主义者的网络框架。',
-          link: 'https://github.com/django/django'
-        }
-      ],
+      myChartStyle: { float: "left", width: "100%", height: "400px" },
       navigators: [
         {
           name: '控制台',
@@ -160,34 +95,18 @@ export default {
           color: 'rgb(31, 218, 202);'
         },
         {
-          name: '部门管理',
+          name: '单图识别',
           icon: 'department',
           route: {
-            name: 'dept'
+            name: 'config'
           },
           color: 'rgb(225, 133, 37);'
         },
         {
-          name: '角色管理',
+          name: '患者图像管理',
           icon: 'role',
           route: {
-            name: 'role'
-          },
-          color: 'rgb(191, 12, 44);'
-        },
-        {
-          name: '菜单管理',
-          icon: 'menu',
-          route: {
-            name: 'menu'
-          },
-          color: 'rgb(63, 178, 127);'
-        },
-        {
-          name: '用户管理',
-          icon: 'user',
-          route: {
-            name: 'user'
+            name: 'file'
           },
           color: 'rgb(191, 12, 44);'
         },
@@ -200,22 +119,105 @@ export default {
           color: 'rgb(0, 216, 255);'
         }
       ],
-      chartData: {
-        columns: ['日期', '销售额'],
-        rows: [
-          { 日期: '1月1日', 销售额: 123 },
-          { 日期: '1月2日', 销售额: 1223 },
-          { 日期: '1月3日', 销售额: 2123 },
-          { 日期: '1月4日', 销售额: 4123 },
-          { 日期: '1月5日', 销售额: 3123 },
-          { 日期: '1月6日', 销售额: 7123 }
-        ]
-      }
     }
+  },
+  mounted() {
+    this.initEcharts();
+    this.initRowEcharts();
   },
   methods: {
     gotoRoute (route) {
       this.$router.push(route)
+    },
+    initEcharts() {
+      // 基本柱状图
+      const option = {
+        xAxis: {
+          data: ["原始细胞", "淋巴细胞", "单核细胞", "浆细胞", "红细胞", "早幼粒", "中幼粒", "晚幼粒", "杆状核", "分叶核", "嗜酸性"],
+          axisLabel: {
+            rotate: 45
+          }
+        },
+        yAxis: {
+          type: "value",
+          name: "数量(个)"
+        },
+        series: [
+          {
+            type: "bar", //形状为柱状图
+            data: [558, 188, 37, 40, 529, 76, 201, 143, 201, 216, 111], 
+          }
+        ],
+        title: {
+          text: "某患者骨髓血细胞数量统计分析",
+          left: "center",
+        },
+        toolbox: {
+            show: true,
+            feature: {
+              mark: { show: true },
+              dataView: { show: true, readOnly: false },
+              restore: { show: true },
+              saveAsImage: { show: true }
+            }
+        }
+      };
+      const myChart = echarts.init(document.getElementById("mychart"));
+      myChart.setOption(option);
+      //随着屏幕大小调节图表
+      window.addEventListener("resize", () => {
+        myChart.resize();
+      });
+    },
+    initRowEcharts() {
+      var chartDom = document.getElementById('rosechart');
+      var myChart = echarts.init(chartDom);
+      var option = {
+          legend: {
+            top: 'bottom'
+          },
+          toolbox: {
+            show: true,
+            feature: {
+              mark: { show: true },
+              dataView: { show: true, readOnly: false },
+              restore: { show: true },
+              saveAsImage: { show: true }
+            }
+          },
+          series: [
+            {
+              name: 'Nightingale Chart',
+              type: 'pie',
+              radius: [50, 150],
+              center: ['50%', '50%'],
+              roseType: 'area',
+              itemStyle: {
+                borderRadius: 8
+              },
+              data: [
+                { value: 58, name: '原始细胞' },
+                { value: 188, name: '淋巴细胞' },
+                { value: 37, name: '单核细胞' },
+                { value: 40, name: '浆细胞' },
+                { value: 59, name: '红细胞' },
+                { value: 76, name: '早幼粒' },
+                { value: 101, name: '中幼粒' },
+                { value: 143, name: '杆状核' },
+                { value: 116, name: '分叶核' },
+                { value: 111, name: '嗜酸性' }
+              ]
+            }
+          ],
+          title: {
+            text: "某患者骨髓血细胞数量统计分析",
+            left: "center",
+          }
+        }
+        myChart.setOption(option);
+        window.addEventListener("resize", () => {
+          myChart.resize();
+        });
     }
   }
 }

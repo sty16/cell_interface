@@ -18,12 +18,6 @@
         :label="item.title"
         :name="item.key"
       >
-        <span slot="label" v-if="item.icon"><i :class="item.icon" style="font-weight: 1000;font-size: 16px;"></i></span>
-        <el-row v-if="item.icon">
-          <el-col :offset="4" :span="8">
-            <addContent></addContent>
-          </el-col>
-        </el-row>
         <formContent :options="item" :editableTabsItem="item"></formContent>
       </el-tab-pane>
     </el-tabs>
@@ -59,11 +53,11 @@ export default {
         parent__isnull: true
       }).then(res => {
         const { data } = res.data
-        data.push({
-          title: '无',
-          icon: 'el-icon-plus',
-          key: 'null'
-        })
+        // data.push({
+        //   title: '无',
+        //   icon: 'el-icon-plus',
+        //   key: 'null'
+        // })
         this.editableTabs = data
       })
     }

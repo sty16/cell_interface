@@ -45,33 +45,13 @@
             },
             {
                 "parent": 1,
-                "title": "请上传骨髓血细胞图像",
-                "key": "cell_picture",
-                "value": null,
-                "sort": 3,
-                "status": true,
-                "data_options": null,
-                "form_item_type": 7,
-                "rule": [                    
-                    {
-                        "message": "必填项不能为空",
-                        "required": true
-                    }
-                ],
-                "placeholder": "请上传骨髓血细胞图像",
-                "setting": null,
-                "children": [],
-                "readonly": false
-            },
-            {
-                "parent": 1,
                 "title": "患者ID",
                 "key": "patient_id",
                 "value": "",
-                "sort": 4,
+                "sort": 3,
                 "status": true,
                 "data_options": null,
-                "form_item_type": 0,
+                "form_item_type": 10,
                 "rule": [
                     {
                         "message": "必填项不能为空",
@@ -85,19 +65,23 @@
             },
             {
                 "parent": 1,
-                "title": "版权信息",
-                "key": "copyright",
-                "value": "邃蓝智能科技（上海）有限公司 版权所有",
-                "sort": 5,
+                "title": "请上传骨髓血细胞图像",
+                "key": "cell_picture",
+                "value": null,
+                "sort": 4,
                 "status": true,
                 "data_options": null,
-                "form_item_type": 0,
-                "rule": [
+                "form_item_type": 7,
+                "rule": [                    
+                    {
+                        "message": "必填项不能为空",
+                        "required": true
+                    }
                 ],
-                "placeholder": "请输入版权信息",
+                "placeholder": "请上传骨髓血细胞图像",
                 "setting": null,
                 "children": [],
-                "readonly": true
+                "readonly": false
             }
         ]
     }

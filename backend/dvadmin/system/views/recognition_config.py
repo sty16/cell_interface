@@ -11,9 +11,10 @@ from django.db.models import Q
 from django_filters.rest_framework import BooleanFilter
 from rest_framework import serializers
 from rest_framework.views import APIView
+import random
 
 from application import dispatch
-from dvadmin.system.models import RecognitionConfig, SystemConfig
+from dvadmin.system.models import RecognitionConfig, SystemConfig, FileList
 from dvadmin.utils.json_response import DetailResponse, SuccessResponse, ErrorResponse
 from dvadmin.utils.models import get_all_models_objects
 from dvadmin.utils.serializers import CustomModelSerializer
@@ -169,6 +170,25 @@ class RecognitionConfigViewSet(CustomModelViewSet):
     def save_content(self, request):
         body = request.data
         data_mapping = {item['id']: item for item in body}
+        file_info = dict()
+        patient_id = 0
+        for item in body:
+            if item['key'] == "cell_picture":
+                file_list = item['value']
+                if len(file_list) == 0:
+                    return DetailResponse(msg="请上传图片")
+                file_info = file_list[0]
+            elif item['key'] == 'patient_id':
+                patient_id = item['value']
+
+        file_obj = FileList.objects.filter(id=file_info['id']).first()
+        url = file_obj.url
+        cell_id, cell_name = self.get_recognition(url)
+        file_obj.cell_id = cell_id
+        file_obj.cell_name = cell_name
+        file_obj.patient_id = patient_id
+        print(patient_id)
+        file_obj.save()
         for obj_id, data in data_mapping.items():
             instance_obj = SystemConfig.objects.filter(id=obj_id).first()
             if instance_obj is None:
@@ -178,7 +198,17 @@ class RecognitionConfigViewSet(CustomModelViewSet):
                 serializer = SystemConfigCreateSerializer(instance_obj, data=data)
             if serializer.is_valid(raise_exception=True):
                 serializer.save()
-        return DetailResponse(msg="保存成功")
+        data = {"cell_id": cell_id, "cell_name": cell_name, "patient_id": patient_id}
+        return DetailResponse(msg="保存成功", data=data)
+
+
+    def get_recognition(self, file):
+        cell_id = random.randint(1, 11)
+        CELL_ITEM_LIST = ["待识别", "原始细胞", "淋巴细胞", "单核细胞", "浆细胞", "红细胞", "早幼粒细胞", "嗜中性中幼粒细胞", \
+         "嗜中性晚幼粒细胞", "嗜中性杆状核细胞", "嗜中性分页核细胞", "嗜酸性粒细胞", "其他细胞"]
+        cell_name = CELL_ITEM_LIST[cell_id]
+        return cell_id, cell_name
+
 
     # def get_association_table(self, request):
     #     """

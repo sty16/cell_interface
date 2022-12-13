@@ -5,7 +5,47 @@
       <el-col :span="12">变量值</el-col>
     </el-row>
     <el-form ref="form" :model="form" label-width="360px" label-position="left" style="margin-top: 20px">
-      <el-form-item :label="item.title" :prop="['array'].indexOf(item.form_item_type_label) >-1?'':item.key"
+      <!-- <el-form-item :label="item.title" :prop="['array'].indexOf(item.form_item_type_label) >-1?'':item.key"
+                    :key="index" :rules="item.rule || []"
+                    v-for="(item,index) in formList"
+
+      > -->
+      <el-form-item :required=true>
+      <template slot="label">
+          <span >操作人</span>
+      </template>
+      <el-col :span="16">
+        <el-input :key=1 type="text" v-model=operator placeholder="" :readonly=true clearable></el-input>
+      </el-col>
+    </el-form-item>
+    <el-form-item :required=true>
+      <template slot="label">
+          <span >上传文件夹图像</span>
+      </template>
+      <el-col :span="16">
+        <el-upload
+              :action="uploadUrl"
+              :headers="uploadHeaders"
+              multiple
+              name="file"
+              :accept="'image/*'"
+              :on-preview="handlePictureCardPreview"
+              :on-success="(response, file, fileList)=>{handleUploadSuccess(response, file, fileList, 'cell_picture')}"
+              :on-error="handleError"
+              :on-exceed="handleExceed"
+              :before-remove="(file, fileList)=>{beforeRemove(file, fileList, 'cell_picture')}"
+              :limit=150
+              ref='imgUpload_cell_picture'
+              data-keyname="cell_picture"
+              :file-list=filesList
+              list-type="picture-card"
+            >
+            <i class="el-icon-plus"></i>
+              <div slot="tip" class="el-upload__tip">只能上传jpg/png文件</div>
+            </el-upload>
+      </el-col>
+    </el-form-item>
+      <!-- <el-form-item :label="item.title" :prop="['array'].indexOf(item.form_item_type_label) >-1?'':item.key"
                     :key="index" :rules="item.rule || []"
                     v-for="(item,index) in formList"
 
@@ -46,9 +86,9 @@
             </el-dialog>
           </div>
         </el-col>
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item>
-        <el-button type="primary" @click="onSubmit">提交</el-button>
+        <el-button type="primary" @click="onSubmit">识别</el-button>
       </el-form-item>
       <el-divider></el-divider>
       <el-form-item label="分类类别">
@@ -68,7 +108,7 @@
 </template>
 
 <script>
-import * as api from '../../config/api'
+import * as api from '../api'
 import util from '@/libs/util'
 import tableSelector from '@/components/table-selector/table-selector'
 
@@ -78,14 +118,14 @@ export default {
   components: {
     tableSelector
   },
-  props: {
-    options: {
-      type: Object
-    },
-    editableTabsItem: {
-      type: Object
-    }
-  },
+  // props: {
+  //   options: {
+  //     type: Object
+  //   },
+  //   editableTabsItem: {
+  //     type: Object
+  //   }
+  // },
   watch: {
     options: {
       handler (nv) {
@@ -99,7 +139,8 @@ export default {
   },
   data () {
     return {
-      formList: [],
+      filesList: [],
+      operator: "",
       form: {},
       childTableData: [],
       childRemoveVisible: false,
@@ -139,88 +180,95 @@ export default {
     // 获取数据
     getInit () {
       const that = this
-      api.GetList({ parent: this.options.id, limit: 999 }).then(res => {
-        const { data } = res.data
-        this.formList = data
-        const form = {}
-        for (var item of data) {
-          const key = item.key
-          if (item.value) {
-            form[key] = item.value
-          }
-          if (key === 'site_operator') {
-            form[key] = 'site_operator'
-          }
-          if (item.form_item_type_label === 'array') {
-            that.$nextTick(() => {
-              const tableName = 'xTable_' + key
-              const $table = this.$refs[tableName][0]
-              $table.loadData(item.children)
-            })
-          }
-        }
-        this.form = JSON.parse(JSON.stringify(form))
-      }).then(      
-          api.getCurrentUserInfo().then(res => {
-          const key = 'site_operator'
-          const userinfo = res.data
-          this.form[key] = userinfo.name
-          // console.log(JSON.stringify(this.form))
-        })
-      )
-
       api.getCurrentUserInfo().then(res => {
           const key = 'site_operator'
           const userinfo = res.data
-          this.form[key] = userinfo.name
-          console.log(JSON.stringify(userinfo))
-          // item.value = userinfo.username
+          this.operator = userinfo.name
+          // console.log(JSON.stringify(this.form))
         })
+
     },
+      // const that = this
+      // api.GetList({ parent: this.options.id, limit: 999 }).then(res => {
+      //   const { data } = res.data
+      //   this.formList = data
+      //   const form = {}
+      //   for (var item of data) {
+      //     const key = item.key
+      //     if (item.value) {
+      //       form[key] = item.value
+      //     }
+      //     if (key === 'site_operator') {
+      //       form[key] = 'site_operator'
+      //     }
+      //     if (item.form_item_type_label === 'array') {
+      //       that.$nextTick(() => {
+      //         const tableName = 'xTable_' + key
+      //         const $table = this.$refs[tableName][0]
+      //         $table.loadData(item.children)
+      //       })
+      //     }
+      //   }
+      //   this.form = JSON.parse(JSON.stringify(form))
+      // }).then(      
+      //     api.getCurrentUserInfo().then(res => {
+      //     const key = 'site_operator'
+      //     const userinfo = res.data
+      //     this.form[key] = userinfo.name
+      //     // console.log(JSON.stringify(this.form))
+      //   })
+      // )
     // 提交数据
     onSubmit () {
+      // const that = this
+      // const form = JSON.parse(JSON.stringify(this.form))
+      // const keys = Object.keys(form)
+      // const values = Object.values(form)
+      // for (const index in this.formList) {
+      //   const item = this.formList[index]
+      //   // eslint-disable-next-line camelcase
+      //   keys.map((mapKey, mapIndex) => {
+      //     if (mapKey === item.key) {
+      //       if (item.form_item_type_label !== 'array') {
+      //         item.value = values[mapIndex]
+      //       }
+      //       // 必填项的验证
+      //       if (['img', 'imgs'].indexOf(item.form_item_type_label) > -1) {
+      //         for (const arr of item.rule) {
+      //           if (arr.required && item.value === null) {
+      //             that.$message.error(item.title + '不能为空')
+      //             return
+      //           }
+      //         }
+      //       }
+      //     }
+      //   })
+      // }
       const that = this
-      const form = JSON.parse(JSON.stringify(this.form))
-      const keys = Object.keys(form)
-      const values = Object.values(form)
-      for (const index in this.formList) {
-        const item = this.formList[index]
-        // eslint-disable-next-line camelcase
-        keys.map((mapKey, mapIndex) => {
-          if (mapKey === item.key) {
-            if (item.form_item_type_label !== 'array') {
-              item.value = values[mapIndex]
-            }
-            // 必填项的验证
-            if (['img', 'imgs'].indexOf(item.form_item_type_label) > -1) {
-              for (const arr of item.rule) {
-                if (arr.required && item.value === null) {
-                  that.$message.error(item.title + '不能为空')
-                  return
-                }
-              }
-            }
-          }
-        })
+      // that.$message.error('图片不能为空')
+      if (this.filesList.length === 0) {
+        that.$message.error('图片不能为空')
+        return
       }
+      console.log(JSON.stringify(this.filesList))
       that.$refs.form.clearValidate()
-      that.$refs.form.validate((valid) => {
-        if (valid) {
-          api.saveContent(this.options.id,
-            this.formList).then(res => {
-            this.$message.success('保存成功')
-            // this.refreshView()
-            const data = res.data
-            console.log(JSON.stringify(res.data))
-            this.cell_name = data.cell_name
-            this.cell_id = data.cell_id
-            // console.log(data['cell_id'])
-          })
-        } else {
-          console.log('error submit!!')
-          return false
-        }
-      })
+      // that.$refs.form.validate((valid) => {
+      //   if (valid) {
+      //     api.saveContent(this.options.id,
+      //       this.formList).then(res => {
+      //       this.$message.success('保存成功')
+      //       // this.refreshView()
+      //       const data = res.data
+      //       console.log(JSON.stringify(res.data))
+      //       this.cell_name = data.cell_name
+      //       this.cell_id = data.cell_id
+      //       // console.log(data['cell_id'])
+      //     })
+      //   } else {
+      //     console.log('error submit!!')
+      //     return false
+      //   }
+      // })
     },
     // 追加
     async onAppend (tableName) {
