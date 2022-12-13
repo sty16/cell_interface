@@ -201,6 +201,35 @@ class RecognitionConfigViewSet(CustomModelViewSet):
         data = {"cell_id": cell_id, "cell_name": cell_name, "patient_id": patient_id}
         return DetailResponse(msg="保存成功", data=data)
 
+    def save_multi(self, request):
+        body = request.data
+        file_info = dict()
+        file_list = []
+        cell_ids = []
+        cell_names = []
+        patient_id = 0
+        for key, item in body.items():
+            if key == "cell_picture":
+                file_list = item
+                if len(file_list) == 0:
+                    return DetailResponse(msg="图片数量为零")
+            elif key == 'patient_id':
+                patient_id = item
+
+        for file_info in file_list:
+            file_obj = FileList.objects.filter(id=file_info['id']).first()
+            url = file_obj.url
+            cell_id, cell_name = self.get_recognition(url)
+            file_obj.cell_id = cell_id
+            file_obj.cell_name = cell_name
+            cell_ids.append(cell_id)
+            cell_names.append(cell_name)
+            file_obj.patient_id = patient_id
+            file_obj.save()
+        data = {"cell_ids": cell_ids, "cell_names": cell_names, "patient_id": patient_id}
+        return DetailResponse(msg="保存成功", data=data)
+
+
 
     def get_recognition(self, file):
         cell_id = random.randint(1, 11)

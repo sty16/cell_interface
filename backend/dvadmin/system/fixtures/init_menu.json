@@ -207,6 +207,22 @@
                 ]
             },
             {
+                "name": "患者数据分析",
+                "icon": "dot-circle-o",
+                "sort": 3,
+                "is_link": false,
+                "is_catalog": false,
+                "web_path": "/analysis",
+                "component": "system/analysis/index",
+                "component_name": "analysis",
+                "status": true,
+                "cache": false,
+                "visible": true,
+                "parent": 285,
+                "children": [],
+                "menu_button": []
+            },
+            {
                 "name": "患者信息管理",
                 "icon": "users",
                 "sort": 6,

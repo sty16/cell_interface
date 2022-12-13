@@ -1,15 +1,6 @@
 <template>
   <d2-container>
     <div>
-      <el-header>
-        <div class="yxt-flex-between">
-          <div>
-            <el-tag>多图识别: 您可以选择文件夹中多张图片进行识别</el-tag>
-          </div>
-          <div>
-          </div>
-        </div>
-      </el-header>
     </div>
     <el-tabs type="border-card" v-model='tabPaneName'>
       <el-tab-pane

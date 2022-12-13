@@ -12,6 +12,7 @@ import { request } from '@/api/service'
 export const urlPrefix = '/api/system/file/'
 
 export function GetList (query) {
+  console.log(query)
   return request({
     url: urlPrefix,
     method: 'get',

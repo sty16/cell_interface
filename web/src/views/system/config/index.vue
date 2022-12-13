@@ -1,6 +1,6 @@
 <template>
   <d2-container>
-    <div>
+    <!-- <div>
       <el-header>
         <div class="yxt-flex-between">
           <div>
@@ -10,7 +10,7 @@
           </div>
         </div>
       </el-header>
-    </div>
+    </div> -->
     <el-tabs type="border-card" v-model="editableTabsValue">
       <el-tab-pane
         :key="index"

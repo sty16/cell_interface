@@ -95,7 +95,7 @@ export default {
           color: 'rgb(31, 218, 202);'
         },
         {
-          name: '单图识别',
+          name: '血细胞识别',
           icon: 'department',
           route: {
             name: 'config'

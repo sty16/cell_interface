@@ -1,21 +1,21 @@
 <template>
   <div>
     <el-row :gutter="20">
-      <el-col :span="12">变量标题</el-col>
-      <el-col :span="12">变量值</el-col>
+      <el-col :span="8">变量标题</el-col>
+      <el-col :span="8">变量值</el-col>
     </el-row>
     <el-form ref="form" :model="form" label-width="360px" label-position="left" style="margin-top: 20px">
-      <!-- <el-form-item :label="item.title" :prop="['array'].indexOf(item.form_item_type_label) >-1?'':item.key"
-                    :key="index" :rules="item.rule || []"
-                    v-for="(item,index) in formList"
-
-      > -->
-      <el-form-item :required=true>
+      <el-form-item>
       <template slot="label">
           <span >操作人</span>
       </template>
-      <el-col :span="16">
+      <el-col :span="8">
         <el-input :key=1 type="text" v-model=operator placeholder="" :readonly=true clearable></el-input>
+      </el-col>
+    </el-form-item>
+    <el-form-item label="患者ID" :required=true>
+      <el-col :span="8">
+        <el-input-number v-model="patient_id" :min="0"></el-input-number>
       </el-col>
     </el-form-item>
     <el-form-item :required=true>
@@ -37,69 +37,30 @@
               :limit=150
               ref='imgUpload_cell_picture'
               data-keyname="cell_picture"
-              :file-list=filesList
+              :file-list=fileList
               list-type="picture-card"
             >
             <i class="el-icon-plus"></i>
-              <div slot="tip" class="el-upload__tip">只能上传jpg/png文件</div>
+              <div slot="tip" class="el-upload__tip">只能上传jpg/png文件, 单次最多150张</div>
             </el-upload>
       </el-col>
     </el-form-item>
-      <!-- <el-form-item :label="item.title" :prop="['array'].indexOf(item.form_item_type_label) >-1?'':item.key"
-                    :key="index" :rules="item.rule || []"
-                    v-for="(item,index) in formList"
-
-      >
-        <template slot="label">
-          <el-input v-if="item.edit" v-model="item.title" style="display: inline-block;width: 200px;" placeholder="请输入标题"></el-input>
-          <span v-else>{{item.title}}</span>
-        </template>
-        <el-col :span="16" >
-          <el-input :key="index" v-if="['text','textarea'].indexOf(item.form_item_type_label) >-1"
-                    :type="item.form_item_type_label"
-                    v-model="form[item.key]" :placeholder="item.placeholder" :readonly="item.readonly" clearable></el-input>
-          <el-input-number v-else-if="item.form_item_type_label === 'number'" v-model="form[item.key]"
-                           :min="0" :key="index"></el-input-number>
-          <div v-else-if="['img','imgs'].indexOf(item.form_item_type_label) >-1" :key="index">
-            <el-upload
-              :action="uploadUrl"
-              :headers="uploadHeaders"
-              name="file"
-              :accept="'image/*'"
-              :on-preview="handlePictureCardPreview"
-              :on-success="(response, file, fileList)=>{handleUploadSuccess(response, file, fileList, item.key)}"
-              :on-error="handleError"
-              :on-exceed="handleExceed"
-              :before-remove="(file, fileList)=>{beforeRemove(file, fileList, item.key)}"
-              :multiple=false
-              :limit=1
-              :ref="'imgUpload_' + item.key"
-              :data-keyname="item.key"
-              :file-list="item.value?item.value:[]"
-              list-type="picture-card"
-            >
-              <i class="el-icon-plus"></i>
-              <div slot="tip" class="el-upload__tip">只能上传jpg/png文件</div>
-            </el-upload>
-            <el-dialog :visible.sync="dialogImgVisible">
-              <img width="100%" :src="dialogImageUrl" alt="">
-            </el-dialog>
-          </div>
-        </el-col>
-      </el-form-item> -->
-      <el-form-item>
-        <el-button type="primary" @click="onSubmit">识别</el-button>
+    <el-form-item>
+        <el-button type="primary" @click="onSubmit">提交</el-button>
       </el-form-item>
       <el-divider></el-divider>
-      <el-form-item label="分类类别">
-        <el-col :span="16" >
-        <el-input type="text" v-model="cell_id" placeholder="待识别" :readonly=true>
+      <el-col style="margin-bottom: 20px">
+        <el-tag effect="dark" type="warning">详细识别信息到患者数据管理/血细胞文件管理查看</el-tag>
+      </el-col>
+      <el-form-item label="分类类别 (按上传顺序排序)">
+        <el-col :span="16">
+        <el-input type="text" v-model="cell_ids" placeholder="待识别" :readonly=true>
         </el-input>
       </el-col>
       </el-form-item>
-      <el-form-item label="分类名称">
+      <el-form-item label="分类名称 (按上传顺序排序)">
         <el-col :span="16" >
-        <el-input type="text" v-model="cell_name" placeholder="待识别" :readonly=true>
+        <el-input type="text" v-model="cell_names" placeholder="待识别" :readonly=true>
         </el-input>
       </el-col>
       </el-form-item>
@@ -118,14 +79,6 @@ export default {
   components: {
     tableSelector
   },
-  // props: {
-  //   options: {
-  //     type: Object
-  //   },
-  //   editableTabsItem: {
-  //     type: Object
-  //   }
-  // },
   watch: {
     options: {
       handler (nv) {
@@ -137,16 +90,18 @@ export default {
       immediate: true
     }
   },
+
   data () {
     return {
-      filesList: [],
+      fileList: [],
       operator: "",
       form: {},
       childTableData: [],
       childRemoveVisible: false,
       hideUpload: false,
-      cell_id: "null",
-      cell_name: "待识别",
+      cell_ids: undefined,
+      patient_id: undefined,
+      cell_names: undefined,
       validRules: {
         title: [
           {
@@ -188,87 +143,37 @@ export default {
         })
 
     },
-      // const that = this
-      // api.GetList({ parent: this.options.id, limit: 999 }).then(res => {
-      //   const { data } = res.data
-      //   this.formList = data
-      //   const form = {}
-      //   for (var item of data) {
-      //     const key = item.key
-      //     if (item.value) {
-      //       form[key] = item.value
-      //     }
-      //     if (key === 'site_operator') {
-      //       form[key] = 'site_operator'
-      //     }
-      //     if (item.form_item_type_label === 'array') {
-      //       that.$nextTick(() => {
-      //         const tableName = 'xTable_' + key
-      //         const $table = this.$refs[tableName][0]
-      //         $table.loadData(item.children)
-      //       })
-      //     }
-      //   }
-      //   this.form = JSON.parse(JSON.stringify(form))
-      // }).then(      
-      //     api.getCurrentUserInfo().then(res => {
-      //     const key = 'site_operator'
-      //     const userinfo = res.data
-      //     this.form[key] = userinfo.name
-      //     // console.log(JSON.stringify(this.form))
-      //   })
-      // )
-    // 提交数据
     onSubmit () {
-      // const that = this
-      // const form = JSON.parse(JSON.stringify(this.form))
-      // const keys = Object.keys(form)
-      // const values = Object.values(form)
-      // for (const index in this.formList) {
-      //   const item = this.formList[index]
-      //   // eslint-disable-next-line camelcase
-      //   keys.map((mapKey, mapIndex) => {
-      //     if (mapKey === item.key) {
-      //       if (item.form_item_type_label !== 'array') {
-      //         item.value = values[mapIndex]
-      //       }
-      //       // 必填项的验证
-      //       if (['img', 'imgs'].indexOf(item.form_item_type_label) > -1) {
-      //         for (const arr of item.rule) {
-      //           if (arr.required && item.value === null) {
-      //             that.$message.error(item.title + '不能为空')
-      //             return
-      //           }
-      //         }
-      //       }
-      //     }
-      //   })
-      // }
       const that = this
+      let imgkey = 'cell_picture'
+      let patientkey = 'patient_id'
       // that.$message.error('图片不能为空')
-      if (this.filesList.length === 0) {
+      if (typeof this.patient_id === "undefined") {
+        that.$message.error('患者ID不能为空')
+        return 
+      }
+      this.form[patientkey] = this.patient_id
+      if (that.form[imgkey].length === 0) {
         that.$message.error('图片不能为空')
         return
       }
-      console.log(JSON.stringify(this.filesList))
       that.$refs.form.clearValidate()
-      // that.$refs.form.validate((valid) => {
-      //   if (valid) {
-      //     api.saveContent(this.options.id,
-      //       this.formList).then(res => {
-      //       this.$message.success('保存成功')
-      //       // this.refreshView()
-      //       const data = res.data
-      //       console.log(JSON.stringify(res.data))
-      //       this.cell_name = data.cell_name
-      //       this.cell_id = data.cell_id
-      //       // console.log(data['cell_id'])
-      //     })
-      //   } else {
-      //     console.log('error submit!!')
-      //     return false
-      //   }
-      // })
+      that.$refs.form.validate((valid) => {
+        if (valid) {
+          api.saveContent(
+            this.form).then(res => {
+            this.$message.success('保存成功')
+            // this.refreshView()
+            const data = res.data
+            this.cell_names = JSON.stringify(data.cell_names)
+            this.cell_ids = JSON.stringify(data.cell_ids)
+            // console.log(data['cell_id'])
+          })
+        } else {
+          console.log('error submit!!')
+          return false
+        }
+      })
     },
     // 追加
     async onAppend (tableName) {
@@ -388,8 +293,13 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .hide .el-upload--picture-card {
   display: none
+}
+.el-input-number {
+  width: 350px;
+  line-height: 37px;
+  height: 35px;
 }
 </style>

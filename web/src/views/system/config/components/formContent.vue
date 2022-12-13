@@ -104,8 +104,8 @@ export default {
       childTableData: [],
       childRemoveVisible: false,
       hideUpload: false,
-      cell_id: "null",
-      cell_name: "待识别",
+      cell_id: undefined,
+      cell_name: undefined,
       validRules: {
         title: [
           {

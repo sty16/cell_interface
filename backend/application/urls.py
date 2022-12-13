@@ -83,6 +83,7 @@ urlpatterns = (
             path("api/init/settings/", InitSettingsViewSet.as_view()),
             path("api/recognition/", RecognitionConfigViewSet.as_view({'get': 'list'})),
             path("api/recognition/save_content/", RecognitionConfigViewSet.as_view({'put': 'save_content'})),
+            path("api/recognition/save_multi/", RecognitionConfigViewSet.as_view({'put': 'save_multi'})),
             path("apiLogin/", ApiLogin.as_view()),
         ]
         + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
