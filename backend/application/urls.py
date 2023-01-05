@@ -84,6 +84,8 @@ urlpatterns = (
             path("api/recognition/", RecognitionConfigViewSet.as_view({'get': 'list'})),
             path("api/recognition/save_content/", RecognitionConfigViewSet.as_view({'put': 'save_content'})),
             path("api/recognition/save_multi/", RecognitionConfigViewSet.as_view({'put': 'save_multi'})),
+            path("api/recognition/save_detect/", RecognitionConfigViewSet.as_view({'put': 'save_detect'})),
+            path("api/recognition/export_zip/", RecognitionConfigViewSet.as_view({'put': 'get_zip'})),
             path("apiLogin/", ApiLogin.as_view()),
         ]
         + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

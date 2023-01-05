@@ -519,3 +519,24 @@ class RecognitionConfig(CoreModel):
     def delete(self, using=None, keep_parents=False):
         res = super().delete(using, keep_parents)
         return res
+
+class DetectFileList(CoreModel):
+
+    patient_id = models.BigIntegerField(default=0, verbose_name="患者ID", help_text="患者ID", blank=True)
+    name = models.CharField(max_length=200, null=True, blank=True, verbose_name="名称", help_text="名称")
+    url = models.FileField(upload_to=media_file_name)
+    md5sum = models.CharField(max_length=36, blank=True, verbose_name="文件md5", help_text="文件md5")
+    
+    def save(self, *args, **kwargs):
+        if not self.md5sum:  # file is new
+            md5 = hashlib.md5()
+            for chunk in self.url.chunks():
+                md5.update(chunk)
+            self.md5sum = md5.hexdigest()
+        super(DetectFileList, self).save(*args, **kwargs)
+
+    class Meta:
+        db_table = table_prefix + "detect_file_list"
+        verbose_name = "检测图片管理"
+        verbose_name_plural = verbose_name
+        ordering = ("-create_datetime",)

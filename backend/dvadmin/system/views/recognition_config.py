@@ -6,20 +6,33 @@
 @Created on: 2022/1/21 003 0:30
 @Remark: 系统配置
 """
+
+import random
+import os
+import json
+import io
+import zipfile
 import django_filters
 from django.db.models import Q
 from django_filters.rest_framework import BooleanFilter
 from rest_framework import serializers
 from rest_framework.views import APIView
-import random
+import cv2
+import numpy as np
+from PIL import Image
+from django.http import FileResponse, HttpResponse
 
+
+from application.settings import BASE_DIR
 from application import dispatch
-from dvadmin.system.models import RecognitionConfig, SystemConfig, FileList
+from dvadmin.system.models import RecognitionConfig, SystemConfig, FileList, DetectFileList
 from dvadmin.utils.json_response import DetailResponse, SuccessResponse, ErrorResponse
 from dvadmin.utils.models import get_all_models_objects
 from dvadmin.utils.serializers import CustomModelSerializer
 from dvadmin.utils.validator import CustomValidationError
 from dvadmin.utils.viewset import CustomModelViewSet
+from django.core.files import File
+from django.http import StreamingHttpResponse
 
 
 class SystemConfigCreateSerializer(CustomModelSerializer):
@@ -122,7 +135,6 @@ class SystemConfigListSerializer(CustomModelSerializer):
     """
     系统配置下模块的保存-序列化器
     """
-
     def update(self, instance, validated_data):
         instance_mapping = {obj.id: obj for obj in instance}
         data_mapping = {item['id']: item for item in validated_data}
@@ -218,7 +230,7 @@ class RecognitionConfigViewSet(CustomModelViewSet):
 
         for file_info in file_list:
             file_obj = FileList.objects.filter(id=file_info['id']).first()
-            url = file_obj.url
+            url = str(file_obj.url)
             cell_id, cell_name = self.get_recognition(url)
             file_obj.cell_id = cell_id
             file_obj.cell_name = cell_name
@@ -229,7 +241,34 @@ class RecognitionConfigViewSet(CustomModelViewSet):
         data = {"cell_ids": cell_ids, "cell_names": cell_names, "patient_id": patient_id}
         return DetailResponse(msg="保存成功", data=data)
 
+    def save_detect(self, request):
+        body = request.data
+        file_info = dict()
+        file_list = []
+        cell_slices = []
+        cell_detect = []
+        patient_id = 0
+        for key, item in body.items():
+            if key == "cell_picture":
+                file_list = item
+                if len(file_list) == 0:
+                    return DetailResponse(msg="图片数量为零")
+            elif key == 'patient_id':
+                patient_id = item
 
+        for file_info in file_list:
+            print(file_info['id'])
+            file_obj = DetectFileList.objects.filter(id=file_info['id']).first()
+            # if file_obj == None:
+            #     continue
+            url = 'media/' + str(file_obj.url)
+            name = file_obj.name
+            res_url, cell_slice = self.get_detect(name, url)
+            cell_slices.extend(cell_slice)
+            cell_detect.append(res_url)
+        data = {"cell_detect": cell_detect, "patient_id": patient_id, "cell_slices":cell_slices}
+        return DetailResponse(msg="保存成功", data=data)
+        
 
     def get_recognition(self, file):
         cell_id = random.randint(1, 11)
@@ -237,6 +276,106 @@ class RecognitionConfigViewSet(CustomModelViewSet):
          "嗜中性晚幼粒细胞", "嗜中性杆状核细胞", "嗜中性分页核细胞", "嗜酸性粒细胞", "其他细胞"]
         cell_name = CELL_ITEM_LIST[cell_id]
         return cell_id, cell_name
+
+
+    def get_detect(self, file_name, file_url):
+        file_info = os.path.splitext(file_name)[0]
+        json_file = file_info + '.json'
+        json_file = os.path.join(BASE_DIR, 'media', 'point', json_file)
+        img_file = os.path.join(BASE_DIR, *file_url.split('/'))
+        data = dict()
+        if os.path.exists(json_file):
+            with open(json_file, 'r') as f:
+                data = json.load(f)
+        else:
+            data['shapes'] = []
+        print(img_file)
+        img = Image.open(img_file)
+        w, h = img.size
+        img = cv2.cvtColor(np.asarray(img), cv2.COLOR_RGB2BGR)
+        cell_slices = []
+        idx = 0
+        for s in data['shapes']: 
+            if s["shape_type"] != "rectangle":
+                continue
+            pts = np.array(s['points']).astype(np.int)
+            x1  = max(min(pts[:, 0]), 0)
+            y1  = max(min(pts[:, 1]), 0)
+            x2  = min(max(pts[:, 0]), w - 1)
+            y2  = min(max(pts[:, 1]), h - 1)
+            if y1 >= y2 or x1 >= x2:
+                continue
+            cut_img = img[y1:y2, x1:x2]
+            print(x1, y1, x2, y2)
+            cut_img = Image.fromarray(cv2.cvtColor(cut_img, cv2.COLOR_BGR2RGB))
+            cut_obj = self.file2obj(cut_img, file_info + str(idx))
+            cell_slices.append('media/' + str(cut_obj.url))
+            idx += 1
+
+        for s in data['shapes']: 
+            if s["shape_type"] != "rectangle":
+                continue
+            pts = np.array(s['points']).astype(np.int)
+            x1  = max(min(pts[:, 0]), 0)
+            y1  = max(min(pts[:, 1]), 0)
+            x2  = min(max(pts[:, 0]), w - 1)
+            y2  = min(max(pts[:, 1]), h - 1)
+            cv2.rectangle(img, (x1, y1), (x2, y2), (0, 0, 255), 3)
+
+        img = Image.fromarray(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
+        res_obj = self.file2obj(img, file_info)
+        # with open(res_file, 'rb') as f:
+        #     res_obj = DetectFileList.objects.create(url=File(f), name=file_info + '_res.jpg')
+        #     res_obj.save()
+        res_url = 'media/' + str(res_obj.url)
+        return res_url, cell_slices
+
+    def get_zip(self, request):
+        body = request.data
+        file_list = []
+        for key, item in body.items():
+            if key == "files":
+                file_list = item
+        # zip_file = os.path.join(BASE_DIR, 'media', 'zip', 'tmp.zip')
+        zip_io = io.BytesIO()
+        z = zipfile.ZipFile(zip_io, 'w', zipfile.ZIP_DEFLATED)
+        for file in file_list:
+            z.write(file, os.path.split(file)[1])
+        z.close()
+        zip_io.seek(0)
+        # response = StreamingHttpResponse(self.file_iterator(zip_file))
+        # response['Content-Type'] = 'application/octet-stream'
+        # response['Content-Disposition'] = 'attachment;filename="{0}"'.format('res.zip')
+        # response = FileResponse(zip_io, as_attachment=True, filename="res.zip") 
+        response = HttpResponse(content_type='application/x-zip-compressed')
+        response['Content-Disposition'] = 'attachment; filename=test.zip'
+        response.write(zip_io.getvalue())
+        return response
+
+
+        
+
+    def file2obj(self, img, file_info):
+        f = io.BytesIO()
+        f.name = 'tmp.jpg'
+        img.save(f, format='jpeg')
+        f.seek(0)
+        res_obj = DetectFileList.objects.create(url=File(io.BufferedReader(f)), name=file_info + '_res.jpg')
+        res_obj.save()
+        return res_obj
+
+    def file_iterator(self, filename, chunk_size=512):
+        with open(filename,'rb') as f:
+            while True:
+                c = f.read(chunk_size)
+                if c:
+                    yield c
+                else:
+                    break
+
+        
+        
+
 
 
     # def get_association_table(self, request):

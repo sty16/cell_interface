@@ -1,5 +1,37 @@
 [
     {
+        "name": "血细胞检测",
+        "icon": "compass",
+        "sort": 0,
+        "is_link": false,
+        "is_catalog": true,
+        "web_path": "",
+        "component": "",
+        "component_name": "",
+        "status": true,
+        "cache": false,
+        "visible": true,
+        "parent": null,
+        "children": [
+            {
+                "name": "图像检测",
+                "icon": "dot-circle-o",
+                "sort": 0,
+                "is_link": false,
+                "is_catalog": false,
+                "web_path": "/detection",
+                "component": "system/detection/index",
+                "component_name": "detection",
+                "status": true,
+                "cache": false,
+                "visible": true,
+                "parent": 285,
+                "children": [],
+                "menu_button": []
+            }
+        ]
+    },
+    {
         "name": "血细胞识别",
         "icon": "bank",
         "sort": 1,

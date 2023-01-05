@@ -14,6 +14,7 @@ from dvadmin.system.views.operation_log import OperationLogViewSet
 from dvadmin.system.views.role import RoleViewSet
 from dvadmin.system.views.system_config import SystemConfigViewSet
 from dvadmin.system.views.user import UserViewSet
+from dvadmin.system.views.detect_file_list import DetectFileViewSet
 
 system_url = routers.SimpleRouter()
 system_url.register(r'menu', MenuViewSet)
@@ -25,6 +26,7 @@ system_url.register(r'operation_log', OperationLogViewSet)
 system_url.register(r'dictionary', DictionaryViewSet)
 system_url.register(r'area', AreaViewSet)
 system_url.register(r'file', FileViewSet)
+system_url.register(r'detect_file', DetectFileViewSet)
 system_url.register(r'api_white_list', ApiWhiteListViewSet)
 system_url.register(r'system_config', SystemConfigViewSet)
 system_url.register(r'message_center',MessageCenterViewSet)
